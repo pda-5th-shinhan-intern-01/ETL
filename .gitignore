@@ -1,0 +1,18 @@
+# IntelliJ IDEA 설정 폴더 무시
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# env
+*/.env
+*/.env-dev
+*/.env-prod
+
+# Java/Spring
+target/
+*.log
+
+# 기타
+.DS_Store
