@@ -1,6 +1,18 @@
+# 웹 프레임워크
 flask
-selenium
+
+# 웹 크롤링 관련
+requests
 beautifulsoup4
+selenium
 webdriver-manager
+
+# OpenAI API 및 토큰 계산
+openai
+tiktoken
+
+# 환경 변수 관리
 python-dotenv
+
+# 캐싱/세션 등 활용 가능
 redis
