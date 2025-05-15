@@ -39,9 +39,9 @@ build/
 __pycache__/
 *.pyc
 
-*/.env
-*/.env-dev
-*/.env-prod
+.env
+.env-dev
+.env-prod
 
 target/
 *.log
