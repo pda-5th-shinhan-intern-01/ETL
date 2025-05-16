@@ -13,6 +13,3 @@ tiktoken
 
 # 환경 변수 관리
 python-dotenv
-
-# 캐싱/세션 등 활용 가능
-redis
