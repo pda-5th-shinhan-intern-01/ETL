@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: collector
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  datasource:
+    url: jdbc:mysql://localhost:3306/hotsignal
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+api:
+  tradingeconomics:
+    key: ${TRADING_ECONOMICS_API_KEY}
+  fred:
+    key: ${FRED_API_KEY}
+
+
