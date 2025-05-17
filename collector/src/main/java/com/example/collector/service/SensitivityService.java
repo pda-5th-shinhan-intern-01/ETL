@@ -142,6 +142,7 @@ public class SensitivityService {
             for (StockSensitivity sensitivity : sensitivities) {
                 double expected = sensitivity.getScore()*deltaI*100;
                 sensitivity.setPerformance(expected);
+                sensitivity.setUnit(unit);
                 System.out.printf("▶ [%s] β=%.4f, ΔI=%.4f, 예측=%.2f%%\n",
                         code, sensitivity.getScore(), deltaI, expected);
             }

@@ -31,6 +31,9 @@ public class StockSensitivity {
     @JoinColumn(name = "indicator_id")
     private Indicator indicator;
 
+    @Setter
+    private String unit;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
 }
