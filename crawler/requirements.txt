@@ -1,4 +1,4 @@
-# 웹 프레임워크
+﻿# 웹 프레임워크
 flask
 
 # 웹 크롤링 관련
@@ -13,3 +13,6 @@ tiktoken
 
 # 환경 변수 관리
 python-dotenv
+
+pymysql
+cryptography
