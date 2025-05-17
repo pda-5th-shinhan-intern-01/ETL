@@ -19,4 +19,6 @@ public interface IndicatorRepository extends JpaRepository<Indicator,Long> {
     List<Indicator> findByDate(LocalDate targetDate);
 
     List<Indicator> findByCodeAndDateAfterOrderByDate(String indicatorCode, LocalDate threeYearsAgo);
+
+    Indicator findByCode(String indicator);
 }
