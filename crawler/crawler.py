@@ -3,13 +3,17 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 import redis
+from pathlib import Path
 import json
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+import pymysql
 
 # .env 불러오기
-load_dotenv()
+base_dir = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=base_dir / ".env")
+
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
@@ -123,7 +127,47 @@ def crawl_tradingeconomics():
     return result
 
 
-def save_to_redis(data_list):
+# def save_to_redis(data_list):
+#     for item in data_list:
+#         try:
+#             dt = datetime.strptime(item['date'], "%Y-%m-%d %I:%M %p")
+#         except Exception as e:
+#             print(f"❌ 날짜 파싱 실패: {item['date']} ({e})")
+#             continue
+#
+#         date_part = dt.strftime("%Y-%m-%d")
+#         time_part = dt.strftime("%H:%M")
+#
+#         event_code = item["event"].upper().replace(" ", "_")  # Redis-safe key
+#         redis_key = f"event:{date_part}:{time_part}:{event_code}"
+#
+#         r.set(redis_key, json.dumps(item))
+#         print(f"✅ 저장됨: {redis_key}")
+#
+
+DB_PORT = int(os.getenv("DB_PORT", 3306))
+DB_NAME = os.getenv("DB_NAME")
+
+# env = os.getenv("ENV", "dev")
+env_file = base_dir / f".env-dev"
+if os.path.exists(env_file):
+    load_dotenv(env_file, override=True)
+DB_USER = os.getenv("DB_USER")
+DB_HOST = os.getenv("DB_HOST","127.0.0.1")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+print(DB_USER, DB_HOST, DB_PASSWORD)
+
+def save_to_db(data_list):
+    conn = pymysql.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        db=DB_NAME,
+        charset='utf8mb4'
+    )
+    cursor = conn.cursor()
+
     for item in data_list:
         try:
             dt = datetime.strptime(item['date'], "%Y-%m-%d %I:%M %p")
@@ -131,18 +175,30 @@ def save_to_redis(data_list):
             print(f"❌ 날짜 파싱 실패: {item['date']} ({e})")
             continue
 
-        date_part = dt.strftime("%Y-%m-%d")
-        time_part = dt.strftime("%H:%M")
+        name = item['event']
+        event = item['event_kor']
+        date = dt.date()
+        previous = item['previous']
+        forecast = item['forecast']
+        actual = item['actual']
 
-        event_code = item["event"].upper().replace(" ", "_")  # Redis-safe key
-        redis_key = f"event:{date_part}:{time_part}:{event_code}"
+        sql = """
+                INSERT INTO economicevent (name, event,date, previous, forecast, actual)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+        values = (name, event,date, previous, forecast, actual)
 
-        r.set(redis_key, json.dumps(item))
-        print(f"✅ 저장됨: {redis_key}")
+        cursor.execute(sql, values)
+        print(f"✅ 저장 완료: {name} ({date})")
 
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 if __name__ == "__main__":
+
     data = crawl_tradingeconomics()
     for item in data:
         print(f"{item['event']} - 📅 {item['date']} | 실제: {item['actual']} | 예측: {item['forecast']} | 전월: {item['previous']}")
-    save_to_redis(data)
+    # save_to_redis(data)
+    save_to_db(data)
