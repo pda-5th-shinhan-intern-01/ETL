@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,8 @@ public class StockService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final StockRepository stockRepository;
     private final TickerNameMapper nameMapper;
+    @Value("${api.fred.key}")
+    private String apiKey;
 
     public void fetchAndStore(String ticker) {
         String url = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker +
@@ -111,5 +114,55 @@ public class StockService {
         } catch (Exception e) {
             e.printStackTrace(); // 필요시 로그로
         }
+    }
+
+    public void updateMarketCaps(LocalDate fromDate) {
+        for (String ticker : nameMapper.getAllTickers()) {
+            String yahooTicker = TickerNameMapper.toYahooSymbol(ticker);
+            Long shares = getFloatShares(yahooTicker);
+
+            if (shares == null) {
+                System.err.println("❌ [" + ticker + "] sharesOutstanding null");
+                continue;
+            }
+
+            List<Stock> prices = stockRepository.findByTickerAndDateAfter(ticker, fromDate);
+
+            for (Stock price : prices) {
+                if (price.getClosePrice() != null) {
+                    long marketCap = (long) (price.getClosePrice() * shares);
+                    price.setMarketCap(marketCap);
+                }
+            }
+
+            stockRepository.saveAll(prices);
+            stockRepository.flush();
+            System.out.println("✅ [" + ticker + "] 시가총액 저장 완료 (" + shares + " 주)");
+
+            try {
+                Thread.sleep(500); // rate limit 대응
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private static final String API_URL = "https://financialmodelingprep.com/stable/shares-float?symbol=%s&apikey=%s";
+
+    public Long getFloatShares(String ticker) {
+        try {
+            String url = String.format(API_URL, ticker, apiKey);
+            String response = restTemplate.getForObject(url, String.class);
+
+            JsonNode root = objectMapper.readTree(response);
+            if (root.isArray() && root.size() > 0) {
+                JsonNode data = root.get(0);
+                return data.get("floatShares").asLong();
+            }
+        } catch (Exception e) {
+            System.err.printf("❌ [%s] 유통주식수 조회 실패: %s%n", ticker, e.getMessage());
+        }
+
+        return null;
     }
 }

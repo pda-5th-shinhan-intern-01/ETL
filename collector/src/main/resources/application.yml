@@ -18,4 +18,5 @@ api:
   fred:
     key: ${FRED_API_KEY}
 
-
+  fmp:
+    key: ${FMP_API_KEY}

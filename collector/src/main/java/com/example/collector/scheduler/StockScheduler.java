@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -34,5 +36,10 @@ public class StockScheduler {
         }
 
         log.info("✅ 모든 종목 초기화 완료");
+    }
+
+//    @Scheduled(initialDelay = 10000, fixedDelay = Long.MAX_VALUE) // 앱 시작 10초 후 1회 실행
+    public void initCap(){
+        stockHistoryService.updateMarketCaps(LocalDate.ofEpochDay(2024-12-25));
     }
 }

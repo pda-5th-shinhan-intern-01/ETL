@@ -1,10 +1,7 @@
 package com.example.collector.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -13,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @Table(name = "stock", uniqueConstraints = @UniqueConstraint(columnNames = {"ticker", "date"}))
 public class Stock {
 
@@ -39,6 +37,8 @@ public class Stock {
 
     private Long volume;
 
+    @Column(name="market_cap")
+    private Long marketCap;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sector_id")
     private Sector sector;
