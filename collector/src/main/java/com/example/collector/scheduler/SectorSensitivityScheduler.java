@@ -22,9 +22,9 @@ public class SectorSensitivityScheduler {
         log.info("종가 평균 계산");
         sectorService.updateSectorReturn(LocalDate.now().minusDays(3));
         log.info("heatmap 계산 시작");
-        sectorSensitivityService.calculateHeatmap("당일");
-        sectorSensitivityService.calculateHeatmap("1일");
-        sectorSensitivityService.calculateHeatmap("3일");
+        sectorSensitivityService.calculateHeatmap("day");
+        sectorSensitivityService.calculateHeatmap("1d");
+        sectorSensitivityService.calculateHeatmap("3d");
     }
 }
 

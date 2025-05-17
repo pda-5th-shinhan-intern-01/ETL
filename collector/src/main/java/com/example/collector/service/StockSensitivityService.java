@@ -83,17 +83,17 @@ public class StockSensitivityService {
         try {
             Double before, after;
             return switch (window) {
-                case "±1일" -> {
+                case "1d" -> {
                     before = prices.get(baseDate.minusDays(1));
                     after = prices.get(baseDate.plusDays(1));
                     yield (before != null && after != null) ? (after - before) / before : null;
                 }
-                case "±3일" -> {
+                case "3d" -> {
                     before = prices.get(baseDate.minusDays(3));
                     after = prices.get(baseDate.plusDays(3));
                     yield (before != null && after != null) ? (after - before) / before : null;
                 }
-                case "당일" -> {
+                case "day" -> {
                     before = prices.get(baseDate.minusDays(1));
                     Double current = prices.get(baseDate);
                     yield (before != null && current != null) ? (current - before) / before : null;
