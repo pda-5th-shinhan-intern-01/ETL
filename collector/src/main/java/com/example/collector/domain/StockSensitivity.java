@@ -1,15 +1,15 @@
 package com.example.collector.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDate;
 
 @Table(name="stocksensitivity")
 @Entity
 @Builder
 @AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class StockSensitivity {
     @Id
@@ -20,6 +20,7 @@ public class StockSensitivity {
     private Double score;
 
     @Column
+    @Setter
     private Double performance;
 
     @ManyToOne(fetch = FetchType.LAZY)
