@@ -38,6 +38,11 @@ public class SensitivityScheduler {
         }
     }
 
+    @Scheduled(initialDelay = 10000, fixedDelay = Long.MAX_VALUE)
+    public void runCalculate() {
+        sensitivityService.calculatePerformance();
+    }
+
 
 //    @Scheduled(cron = "0 0 3 * * ?")
 //    @Scheduled(cron = "0 10 10 * * *")

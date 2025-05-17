@@ -52,7 +52,7 @@ public class StockSensitivityService {
         for (Map.Entry<String, List<Double>> indEntry : indicatorReturns.entrySet()) {
             String indicatorCode = indEntry.getKey();
             List<Double> x = indEntry.getValue();
-            Indicator indicatorEntity = indicatorRepository.findByCode(indicatorCode);
+            Indicator indicatorEntity = indicatorRepository.findTopByCodeOrderByDateDesc(indicatorCode);
 
             for (Map.Entry<String, List<Double>> secEntry : sectorReturns.entrySet()) {
                 String sectorName = secEntry.getKey();

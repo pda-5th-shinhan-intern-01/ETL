@@ -55,6 +55,7 @@ public class IndicatorService {
 
                     Indicator indicator = Indicator.builder()
                             .code(indicatorCode)
+                            .name(IndicatorMapper.getName(indicatorCode))
                             .date(date)
                             .value(value)
                             .build();
