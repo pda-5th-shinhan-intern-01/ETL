@@ -70,15 +70,15 @@ public class SectorService {
         Double after = null;
 
         switch (window) {
-            case "당일":
+            case "day":
                 before = getPriceBefore(ticker, baseDate,1);
                 after = getPriceAfter(ticker, baseDate,0);
                 break;
-            case "1일":
+            case "1d":
                 before = getPriceBefore(ticker, baseDate,1);
                 after = getPriceAfter(ticker, baseDate,1);
                 break;
-            case "3일":
+            case "3d":
                 before = getPriceBefore(ticker, baseDate,3);
                 after = getPriceAfter(ticker, baseDate,3);
                 break;
@@ -92,8 +92,8 @@ public class SectorService {
 
     private Long getMarketCap(String ticker, LocalDate baseDate, String window) {
         int offset = switch (window) {
-            case "당일", "1일" -> 1;
-            case "3일" -> 3;
+            case "day", "1d" -> 1;
+            case "3d" -> 3;
             default -> 0;
         };
         return getMarketCapBefore(ticker, baseDate, offset);
