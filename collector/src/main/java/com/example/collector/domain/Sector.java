@@ -1,11 +1,13 @@
 package com.example.collector.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name="sector")
 public class Sector {
 
@@ -16,4 +18,7 @@ public class Sector {
     private String name;
     @Column(name="change_rate")
     private Double changeRate;
+
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
 }
