@@ -11,6 +11,7 @@ import re
 import os
 from datetime import datetime
 
+from fomc.inject_date import inject_fomc_datetime, clean_placeholder_fields
 
 base_dir = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=base_dir / ".env")
@@ -66,6 +67,8 @@ def init_fomc():
 
         try:
             summary = json.loads(summary_json_str)
+            summary = inject_fomc_datetime(summary, date)
+            summary = clean_placeholder_fields(summary)
         except json.JSONDecodeError:
             print("❌ JSON 파싱 실패")
             print("🧾 GPT 응답 원문:\n", summary_raw)  # 디버깅용 출력
